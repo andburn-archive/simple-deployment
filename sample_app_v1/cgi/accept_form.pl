@@ -15,7 +15,7 @@ insertDB($name,$address);
 $html_content .= "<h3>Showing the contents of the Database</h3>";
 $html_content .= showDB();
 
-open IFILE, 'template.html';
+open IFILE, 'main.html';
 while (<IFILE>) {
 	if (/<%CONTENT%>/) {
 		# add content instead of current line
