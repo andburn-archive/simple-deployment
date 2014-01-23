@@ -10,9 +10,9 @@ my $html_content = '';
 my $name=param('name');
 my $address=param('address');
 
-$html_content .= "<h3>inserting name:$name and address:$address into Database</h3>";
+$html_content .= "<h3>You entered:</h3><dl><dt>name</dt><dd>$name</dd><dt>name</dt><dd>$address</dd></dl>";
 insertDB($name,$address);
-$html_content .= "<h3>Showing the contents of the Database</h3>";
+$html_content .= '<h2 class="content-subhead">Showing the contents of the Database</h2>';
 $html_content .= showDB();
 
 open IFILE, 'main.html';
@@ -55,7 +55,7 @@ sub showDB {
 	$sth->execute();
 	
 	my $dbstr = '<table class="pure-table pure-table-bordered">' . "\n";
-	$dbstr .= "<thead><tr><th>Name</th></th>Address</th></thead>\n";
+	$dbstr .= "<thead><tr><th>Name</th><th>Address</th></thead>\n";
 	$dbstr .= "<tbody>\n";
 	while (my $result = $sth->fetchrow_hashref()) {
 		$dbstr .= '<tr><td>' . $result->{'name'}  . '</td><td>' . $result->{'address'} . "</td></tr>\n";
