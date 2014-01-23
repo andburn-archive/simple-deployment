@@ -10,9 +10,11 @@ my $html_content = '';
 my $name=param('name');
 my $address=param('address');
 
-$html_content .= "<h3>You entered:</h3><dl><dt>name</dt><dd>$name</dd><dt>name</dt><dd>$address</dd></dl>";
+$html_content .= "<h3>You entered:</h3>";
+$html_content .= "<p><strong>name</strong> <em>$name</em></p>";
+$html_content .= "<p><strong>address</strong> <em>$address</em></p>";
 insertDB($name,$address);
-$html_content .= '<h2 class="content-subhead">Showing the contents of the Database</h2>';
+$html_content .= '<h2>The database contains the following:</h2>';
 $html_content .= showDB();
 
 open IFILE, 'main.html';
