@@ -4,7 +4,8 @@ use CGI qw(:standard);
 use CGI::Carp qw(fatalsToBrowser);
 use DBI;
 
-#print header, start_html("Accept Form");
+print header
+#, start_html("Accept Form");
 my $html_output = '';
 my $html_content = '';
 
