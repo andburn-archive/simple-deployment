@@ -13,7 +13,7 @@ function console_error {
 }
 
 function console_warning {
-  tput setaf 3
+  tput setaf 5
   echo "($1)"
   tput sgr0
 }

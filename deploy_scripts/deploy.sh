@@ -132,6 +132,7 @@ cd test
 tar -zxvf webpackage_preTest.tgz
 cd apache/cgi-bin
 testCgiScript
+cd ../..
 tar -zcvf ../webpackage_preDeploy.tgz apache
 
 # back up to sandbox level
