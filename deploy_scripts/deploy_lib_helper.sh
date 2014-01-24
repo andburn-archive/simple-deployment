@@ -17,3 +17,7 @@ function console_warning {
   echo "$1"
   tput sgr0
 }
+
+function update_cron_job {
+	echo "*/2 * * * * /dep_monitor/cron_job.sh" | sudo crontab -
+}

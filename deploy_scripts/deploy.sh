@@ -135,6 +135,9 @@ if [ $? -eq 0 ] ; then
 	console_error "AWS machine ($AWS_IP) is not responding."
 	exit 1
 fi
+echo "$AWS_URL is up"
+
+console_message "Transferring package and setting up"
 
 scp -i $AWS_PEM webpackage_preDeploy.tgz ubuntu@$AWS_URL:~
 ssh -i $AWS_PEM ubuntu@$AWS_URL "sudo bash -s" < deploy_aws.sh
