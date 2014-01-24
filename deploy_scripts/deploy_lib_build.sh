@@ -6,7 +6,7 @@ source deploy_lib_helper.sh
 function clean_install {
 	console_message 'Cleaning System Environment'
 
-	# Stop Apache & MySQL services
+	console_message 'Stopping Services'
 	/etc/init.d/apache2 stop
 	/etc/init.d/mysql stop
 
@@ -37,6 +37,26 @@ function clean_install {
 	apt-get -q -y install tidy
 }
 
+# application integration
+function app_integrate {
+	cd webpackage/html
+	# use tidy utility to check html
+	tidy *.htm* > /dev/null 2>&1
+	local TIDYSTATUS=$?
+	if [ $TIDYSTATUS -eq 2 ] ; then
+		echo tidy: errors found in html files
+		console_error "Errors found in HTML files, exiting"
+		exit 1;
+	elif [ $TIDYSTATUS -eq 1 ] ; then
+		console_warning "The HTML files generated warnings, ignoring"
+	fi
+	cd ../..
+	mkdir -p apache/cgi-bin
+	mkdir -p apache/www
+	cp webpackage/html/* apache/www/
+	cp webpackage/cgi/* apache/cgi-bin
+	cp webpackage/templates/* apache/cgi-bin
+}
 
 function extract_package {
 	local package=$1
@@ -46,11 +66,12 @@ function extract_package {
 	elif [ -z $directory ] ; then
 		console_error "extract_package: invalid arguments"
 	fi
+	echo "Extracting $package into $dir"
 	# move pack to dir
 	mv $package $directory
 	cd $directory
 	# extract pack
-	tar -zxvf $package
+	tar -zxf $package
 }
 
 function create_package {
@@ -61,8 +82,9 @@ function create_package {
 	elif [ -z $directory ] ; then
 		console_error "create_package: invalid arguments"
 	fi
+	echo "Creating $package from $dir"
 	# create a tar archive from $directory
-	tar -zcvf $package $directory
+	tar -zcf $package $directory
 	cd ..
 }
 

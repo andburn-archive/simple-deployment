@@ -43,10 +43,8 @@ console_message "Building application"
 
 # move preBuild archive to build folder
 extract_package "webpackage_preBuild.tgz" "build"
-
 # run build perl script
 perl $SANDBOX_DIR/buildapp.pl webpackage
-
 # create preIntegrate archive
 create_package "../webpackage_preIntegrate.tgz" "webpackage"
 
@@ -58,25 +56,8 @@ ERRORCHECK=0
 console_message "Integrating application"
 
 extract_package "webpackage_preIntegrate.tgz" "integrate"
-
-cd webpackage/html
-# use tidy utility to check html
-tidy *.htm* > /dev/null 2>&1
-TIDYSTATUS=$?
-if [ $TIDYSTATUS -eq 2 ] ; then
-	echo tidy: errors found in html files
-	console_error "Errors found in HTML files, exiting"
-	exit 1;
-elif [ $TIDYSTATUS -eq 1 ] ; then
-	console_warning "The HTML files generated warnings, ignoring"
-fi
-cd ../..
-mkdir -p apache/cgi-bin
-mkdir -p apache/www
-cp webpackage/html/* apache/www/
-cp webpackage/cgi/* apache/cgi-bin
-cp webpackage/templates/* apache/cgi-bin
-
+# perform integration step
+app_integrate
 create_package "../webpackage_preTest.tgz" "apache"
 
 ERRORCHECK=0
@@ -105,14 +86,9 @@ address         VARCHAR(30)   NOT NULL DEFAULT ''
 insert into custdetails (name,address) values ('John Smith','Street Address'); select * from custdetails;
 FINISH
 
-cd apache/cgi-bin
-perl -w accept_form.pl name="Bill Jones" address="No fixed abode" | grep "<td>Bill Jones</td><td>No fixed abode</td>"
-CGI_STATUS=$?
-cd ../..
-if [ $CGI_STATUS -ne 0 ] ; then
-	console_error "CGI script failed test, aborting"
-	exit 1
-fi
+
+test_cgi_script
+
 console_message "CGI script passed test"
 tar -zcvf ../webpackage_preDeploy.tgz apache
 
