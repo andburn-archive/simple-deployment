@@ -45,6 +45,11 @@ console_message "Building application"
 extract_package "webpackage_preBuild.tgz" "build"
 # run build perl script
 perl $SANDBOX_DIR/buildapp.pl webpackage
+if [ $? -ne 0 ] ; then
+	console_error "Build failed"
+	exit 1
+fi
+echo "HTML templates merged"
 # create preIntegrate archive
 create_package "../webpackage_preIntegrate.tgz" "webpackage"
 
@@ -86,21 +91,19 @@ address         VARCHAR(30)   NOT NULL DEFAULT ''
 insert into custdetails (name,address) values ('John Smith','Street Address'); select * from custdetails;
 FINISH
 
-
+# run cgi form script, outside apache
 test_cgi_script
-
 console_message "CGI script passed test"
-tar -zcvf ../webpackage_preDeploy.tgz apache
 
 console_message "Setting up test server"
-
+# copy all content to apache on test server
 cp apache/www/* /var/www/
 cp apache/cgi-bin/* /usr/lib/cgi-bin/
 chmod a+x /usr/lib/cgi-bin/*.pl
 
-# Start services
-/etc/init.d/apache2 start
-/etc/init.d/mysql start
+# restart apache
+/etc/init.d/apache2 restart
+/etc/init.d/mysql restart
 
 console_message "Testing on test server"
 console_warning "Check manually on 127.0.0.1:8080"
@@ -112,8 +115,9 @@ if [ $? -ne 0 ] ; then
 fi
 console_message "Server test passed"
 
-# back up to sandbox level
-cd ..
+# make final package to deploy to the server
+create_package "../webpackage_preDeploy.tgz" "apache"
+
 ERRORCHECK=0
 
 ## --- Deploying to Live AWS Server --- ## ## ----------------------------------------------------------##

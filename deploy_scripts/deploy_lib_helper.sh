@@ -14,6 +14,6 @@ function console_error {
 
 function console_warning {
   tput setaf 5
-  echo "($1)"
+  echo "$1"
   tput sgr0
 }

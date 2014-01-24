@@ -66,7 +66,7 @@ function extract_package {
 	elif [ -z $directory ] ; then
 		console_error "extract_package: invalid arguments"
 	fi
-	echo "Extracting $package into $dir"
+	echo "Extracting $package into $directory"
 	# move pack to dir
 	mv $package $directory
 	cd $directory
@@ -82,7 +82,7 @@ function create_package {
 	elif [ -z $directory ] ; then
 		console_error "create_package: invalid arguments"
 	fi
-	echo "Creating $package from $dir"
+	echo "Creating $package from $directory"
 	# create a tar archive from $directory
 	tar -zcf $package $directory
 	cd ..
