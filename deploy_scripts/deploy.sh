@@ -159,6 +159,19 @@ fi
 console_message "CGI script passed test"
 tar -zcvf ../webpackage_preDeploy.tgz apache
 
+console_message "Setting up test server"
+
+cp apache/www/* /var/www/
+cp apache/cgi-bin/* /usr/lib/cgi-bin/
+chmod a+x /usr/lib/cgi-bin/*.pl
+
+# Start services
+/etc/init.d/apache2 start
+/etc/init.d/mysql start
+
+console_message "Testing on test server"
+console_warning "Check manually on 127.0.0.1:8080"
+
 # back up to sandbox level
 cd ..
 ERRORCHECK=0
