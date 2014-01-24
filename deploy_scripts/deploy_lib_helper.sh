@@ -5,3 +5,9 @@ function console_message {
   echo "|-------- $1 -------|"
   tput sgr0
 }
+
+function console_error {
+  tput setaf 1
+  echo ">-------- $1 -------<"
+  tput sgr0
+}

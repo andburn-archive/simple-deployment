@@ -40,7 +40,7 @@ fi
 # clone github repo
 echo "----- Cloning source from GitHub"
 git clone $REPO_URL
-cp $REPO_NAME/vbox_scripts/* ./
+cp $REPO_NAME/deploy_scripts/* ./
 cp -r $REPO_NAME/sample_app_v$APP_VERSION ./webpackage
 rm -rf $REPO_NAME
 
