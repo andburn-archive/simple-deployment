@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 source deploy_lib_monitor.sh
 
