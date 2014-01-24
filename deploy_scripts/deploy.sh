@@ -1,13 +1,18 @@
 #!/usr/bin/bash
 
-# import config file
-source deploy.cfg
 # import some external functions
 source deploy_lib_helper.sh
 source deploy_lib_build.sh
 source deploy_lib_monitor.sh
 source deploy_lib_test.sh
 
+# AWS instance data
+AWS_IP="54.194.174.13"
+AWS_URL="ec2-54-194-174-13.eu-west-1.compute.amazonaws.com"
+# script needs pem file on VBox machine at:
+AWS_PEM="/home/testuser/.ssh/aws.pem"
+
+# keep track of root build dir
 SANDBOX_DIR=$(pwd)
 
 console_message "Checking Source Package"
@@ -53,8 +58,6 @@ echo "HTML templates merged"
 # create preIntegrate archive
 create_package "../webpackage_preIntegrate.tgz" "webpackage"
 
-# TODO: sort out this ERRORCHECK
-ERRORCHECK=0
 
 #--- Start Integration Process ---#
 
@@ -65,7 +68,6 @@ extract_package "webpackage_preIntegrate.tgz" "integrate"
 app_integrate
 create_package "../webpackage_preTest.tgz" "apache"
 
-ERRORCHECK=0
 
 #--- Start Test Process ---#
 
@@ -105,6 +107,10 @@ chmod a+x /usr/lib/cgi-bin/*.pl
 /etc/init.d/apache2 restart
 /etc/init.d/mysql restart
 
+# test server state
+console_message "Testing test server infrastructure"
+test_infrastructure
+
 console_message "Testing on test server"
 console_warning "Check manually on 127.0.0.1:8080"
 
@@ -118,15 +124,10 @@ console_message "Server test passed"
 # make final package to deploy to the server
 create_package "../webpackage_preDeploy.tgz" "apache"
 
-ERRORCHECK=0
 
-## --- Deploying to Live AWS Server --- ## ## ----------------------------------------------------------##
+## --- Deploying to Live AWS Server --- ##
 
 console_message "Deploy to live AWS Server"
-
-AWS_IP="54.194.174.13"
-AWS_URL="ec2-54-194-174-13.eu-west-1.compute.amazonaws.com"
-AWS_PEM="/home/testuser/.ssh/aws.pem"
 
 scp -i $AWS_PEM webpackage_preDeploy.tgz ubuntu@$AWS_URL:~
 ssh -i $AWS_PEM ubuntu@$AWS_URL "sudo bash -s" < deploy_aws.sh

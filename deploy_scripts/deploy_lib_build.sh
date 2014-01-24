@@ -102,7 +102,6 @@ function createChecksumFile {
 		MD5SUM=$(md5sum -b $f)
 		echo $MD5SUM >> $out_file
 	done
-	# return somethign
 }
 
 # quickest way to checksum checksums! and compare

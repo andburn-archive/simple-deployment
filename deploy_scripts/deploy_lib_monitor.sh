@@ -1,36 +1,8 @@
-# Level 1 functions <---------------------------------------
+#!/usr/bin/bash
 
-function isApacheRunning {
-	isRunning apache2
-	return $?
-}
+source deploy_lib_helper.sh
 
-function isApacheListening {
-	isTCPlisten 80
-	return $?
-}
-
-function isMysqlListening {
-	isTCPlisten 3306
-	return $?
-}
-
-function isApacheRemoteUp {
-	isTCPremoteOpen 127.0.0.1 80
-	return $?
-}
-
-function isMysqlRunning {
-	isRunning mysqld
-	return $?
-}
-
-function isMysqlRemoteUp {
-	isTCPremoteOpen 127.0.0.1 3306
-	return $?
-}
-
-# Level 0 functions <--------------------------------------
+# ---- Level 0 functions
 
 function isRunning {
 	PROCESS_NUM=$(ps -ef | grep "$1" | grep -v "grep" | wc -l)
@@ -86,4 +58,98 @@ function getCPU {
 	else
 		return 1
 	fi
+}
+
+# ---- Level 1 functions
+
+function isApacheRunning {
+	isRunning apache2
+	return $?
+}
+
+function isApacheListening {
+	isTCPlisten 80
+	return $?
+}
+
+function isMysqlListening {
+	isTCPlisten 3306
+	return $?
+}
+
+function isApacheRemoteUp {
+	isTCPremoteOpen 127.0.0.1 80
+	return $?
+}
+
+function isMysqlRunning {
+	isRunning mysqld
+	return $?
+}
+
+function isMysqlRemoteUp {
+	isTCPremoteOpen 127.0.0.1 3306
+	return $?
+}
+
+# ----
+
+function test_infrastructure {
+	local ERRORCOUNT=0
+
+	isApacheRunning
+	if [ "$?" -eq 1 ]; then
+		console_message "Apache process is Running"
+	else
+		console_error "Apache process is not Running"
+		ERRORCOUNT=$((ERRORCOUNT+1))
+	fi
+
+	isApacheListening
+	if [ "$?" -eq 1 ]; then
+		console_message "Apache is Listening"
+	else
+		console_error "Apache is not Listening"
+		ERRORCOUNT=$((ERRORCOUNT+1))
+	fi
+
+	isApacheRemoteUp
+	if [ "$?" -eq 1 ]; then
+		console_message "Remote Apache TCP port is up"
+	else
+		console_error "Remote Apache TCP port is down"
+		ERRORCOUNT=$((ERRORCOUNT+1))
+	fi
+
+	isMysqlRunning
+	if [ "$?" -eq 1 ]; then
+		console_message "Mysql process is Running"
+	else
+		console_error "Mysql process is not Running"
+		ERRORCOUNT=$((ERRORCOUNT+1))
+	fi
+
+	isMysqlListening
+	if [ "$?" -eq 1 ]; then
+		console_message "Mysql is Listening"
+	else
+		console_error "Mysql is not Listening"
+		ERRORCOUNT=$((ERRORCOUNT+1))
+	fi
+
+	isMysqlRemoteUp
+	if [ "$?" -eq 1 ]; then
+		console_message "Remote Mysql TCP port is up"
+	else
+		console_error "Remote Mysql TCP port is down"
+		ERRORCOUNT=$((ERRORCOUNT+1))
+	fi
+
+
+	if  [ $ERRORCOUNT -gt 0 ]
+	then
+		console_error "There is a problem with Apache or Mysql"
+		#| perl sendmail.pl $ADMINISTRATOR $MAILSERVER
+	fi
+
 }

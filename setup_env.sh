@@ -4,7 +4,9 @@
 REPO_NAME="simple_deployment"
 REPO_URL="https://github.com/andburn/$REPO_NAME.git"
 
-# TODO: need to add this to start_scripts
+# monitor script location
+MONITOR_DIR="/dep_monitor"
+
 # the version of the app to build
 APP_VERSION=1
 if [ -n "$1" ] ; then
@@ -43,6 +45,14 @@ echo "----- Cloning source from GitHub"
 git clone $REPO_URL
 cp $REPO_NAME/deploy_scripts/* ./
 cp -r $REPO_NAME/sample_app_v$APP_VERSION/* ./webpackage
+
+# copy monitor scripts to location
+echo "----- Setup/Update monitoring scripts"
+mkdir -p $MONITOR_DIR
+rm -rf $MONITOR_DIR/*
+#cp $REPO_NAME/* $MONITOR_DIR/
+
+# delete repo directory
 rm -rf $REPO_NAME
 
 # run script in sandbox on remote machine

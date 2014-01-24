@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 
+# check structure and merge 'main.html' template with all
+# html content files
+
 my $dir = $ARGV[0];
 my $out_dir = 'html';
 my @structure = ('cgi', 'content', 'templates');
@@ -21,6 +24,7 @@ if ($structre_count != $#structure) {
 if (-e "$dir/$structure[2]/main.html") {
 	my $template = file_to_string("$dir/$structure[2]/main.html");
 	my @content_files = glob("$dir/$structure[1]/*.html");
+	# for all html content files, create new with template
 	foreach my $c (@content_files) {
 		my $filename = $1 if $c =~ /([^\/]+)$/;
 		my $content = file_to_string($c);
