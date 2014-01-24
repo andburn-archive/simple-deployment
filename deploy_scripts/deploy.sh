@@ -189,7 +189,8 @@ console_message "Deploy to live AWS Server"
 
 AWS_IP="54.194.174.13"
 AWS_URL="ec2-54-194-174-13.eu-west-1.compute.amazonaws.com"
-AWS_PEM="~/.ssh/aws.pem"
+AWS_PEM="/home/testuser/.ssh/aws.pem"
 
-scp -i $AWS_PEM webpackage_preDeploy.tgz ubuntu@$AWS_URL:~
+scp -Bq -i $AWS_PEM webpackage_preDeploy.tgz ubuntu@$AWS_URL:~
+ssh -i $AWS_PEM ubuntu@$AWS_URL "sudo bash -s" < deploy_aws.sh
 
