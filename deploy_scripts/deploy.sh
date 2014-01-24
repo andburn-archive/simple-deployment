@@ -173,7 +173,11 @@ console_message "Testing on test server"
 console_warning "Check manually on 127.0.0.1:8080"
 
 test_application_running
-echo $?
+if [ $? -ne 0 ] ; then
+	console_error "Server test failed, aborting"
+	exit 1
+fi
+console_message "Server test passed"
 
 # back up to sandbox level
 cd ..
