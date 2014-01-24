@@ -50,7 +50,7 @@ cp -r $REPO_NAME/sample_app_v$APP_VERSION/* ./webpackage
 echo "----- Setup/Update monitoring scripts"
 mkdir -p $MONITOR_DIR
 rm -rf $MONITOR_DIR/*
-cp $REPO_NAME/{cron_job.sh, deploy_lib_monitor.sh, deploy_lib_helper.sh} $MONITOR_DIR/
+cp $REPO_NAME/{cron_job.sh,deploy_lib_monitor.sh,deploy_lib_helper.sh} $MONITOR_DIR/
 chmod a+x $MONITOR_DIR/cron_job.sh
 echo "*/2 * * * * /dep_monitor/cron_job.sh" | sudo crontab -
 
