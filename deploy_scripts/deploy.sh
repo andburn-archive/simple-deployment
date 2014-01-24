@@ -182,3 +182,14 @@ console_message "Server test passed"
 # back up to sandbox level
 cd ..
 ERRORCHECK=0
+
+## --- Deploying to Live AWS Server --- ## ## ----------------------------------------------------------##
+
+console_message "Deploy to live AWS Server"
+
+AWS_IP="54.194.174.13"
+AWS_URL="ec2-54-194-174-13.eu-west-1.compute.amazonaws.com"
+AWS_PEM="~/.ssh/aws.pem"
+
+scp -i $AWS_PEM webpackage_preDeploy.tgz ubuntu@$AWS_URL:~
+
