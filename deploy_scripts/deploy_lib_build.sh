@@ -29,7 +29,3 @@ function compareChecksumFiles {
 		return 1
 	fi
 }
-
-function testCgiForm {
-	
-}

@@ -36,7 +36,7 @@ rm -rf webpackage
 #--- Clean Build/Test Server ---#
 
 # TODO: remove this
-DOCLEAN=0
+DOCLEAN=1
 
 if [ $DOCLEAN -eq 0 ] ; then
 
@@ -69,11 +69,10 @@ echo mysql-server mysql-server/root_password password password | debconf-set-sel
 echo mysql-server mysql-server/root_password_again password password | debconf-set-selections
 console_message "Installing MySQL"
 apt-get -q -y install mysql-server mysql-client
-
-fi
-
 console_message "Installing Tidy"
 apt-get -q -y install tidy
+
+fi
 
 #--- Start Build Process ---#
 
@@ -149,8 +148,15 @@ address         VARCHAR(30)   NOT NULL DEFAULT ''
 insert into custdetails (name,address) values ('John Smith','Street Address'); select * from custdetails;
 FINISH
 
-perl -w apache/cgi-bin/accept_form.pl name="Bill Jones" address="No fixed abode"
-
+cd apache/cgi-bin
+perl -w accept_form.pl name="Bill Jones" address="No fixed abode" | grep "<td>Bill Jones</td><td>No fixed abode</td>"
+CGI_STATUS=$?
+cd ../..
+if [ $CGI_STATUS -ne 0 ] ; then
+	console_error "CGI script failed test, aborting"
+	exit 1
+fi
+console_message "CGI script passed test"
 tar -zcvf ../webpackage_preDeploy.tgz apache
 
 # back up to sandbox level
