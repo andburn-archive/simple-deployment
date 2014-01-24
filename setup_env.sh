@@ -4,6 +4,7 @@
 REPO_NAME="simple_deployment"
 REPO_URL="https://github.com/andburn/$REPO_NAME.git"
 
+# TODO: need to add this to start_scripts
 # the version of the app to build
 APP_VERSION=1
 if [ -n "$1" ] ; then
@@ -41,7 +42,7 @@ fi
 echo "----- Cloning source from GitHub"
 git clone $REPO_URL
 cp $REPO_NAME/deploy_scripts/* ./
-cp -r $REPO_NAME/sample_app_v$APP_VERSION ./webpackage
+cp -r $REPO_NAME/sample_app_v$APP_VERSION/* ./webpackage
 rm -rf $REPO_NAME
 
 # run script in sandbox on remote machine

@@ -20,7 +20,7 @@ tar -zcvf webpackage_preBuild.tgz webpackage
 compareChecksumFiles /tmp/last_build.md5 webpackage.md5
 FILECHANGE=$?
 # TODO: only change on successfull deployment (i.e. reflects live package)
-cp webpackage.md5 /tmp/last_build.md5
+#cp webpackage.md5 /tmp/last_build.md5
 
 # if there is no difference in the files do nothing and exit
 if [ $FILECHANGE -eq 0 ]
