@@ -7,5 +7,5 @@ source deploy_lib_helper.sh
 source deploy_lib_build.sh
 source deploy_lib_monitor.sh
 
-console_message "transfer complete!"
+console_message "Starting Build Process"
 ls -la
