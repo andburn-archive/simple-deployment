@@ -11,3 +11,9 @@ function console_error {
   echo ">-------- $1 -------<"
   tput sgr0
 }
+
+function console_warning {
+  tput setaf 3
+  echo "($1)"
+  tput sgr0
+}

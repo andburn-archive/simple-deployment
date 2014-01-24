@@ -6,6 +6,7 @@ source deploy.cfg
 source deploy_lib_helper.sh
 source deploy_lib_build.sh
 source deploy_lib_monitor.sh
+source deploy_lib_test.sh
 
 SANDBOX_DIR=$(pwd)
 
@@ -49,29 +50,29 @@ console_message 'Cleaning System Environment'
 console_message 'Updating pacakge repositories'
 apt-get -qq update
 
-deploy_message "Removing Apache"
+console_message "Removing Apache"
 apt-get -q -y purge apache2
-deploy_message "Removing MySQL"
+console_message "Removing MySQL"
 apt-get -q -y purge mysql-server mysql-client
-deploy_message "Removing Tidy"
+console_message "Removing Tidy"
 apt-get -q -y purge tidy
 
-deploy_message "Tidying Up Packages"
+console_message "Tidying Up Packages"
 apt-get -q -y autoremove
 apt-get -q -y autoclean
 
-deploy_message "Installing Apache"
+console_message "Installing Apache"
 apt-get -q -y install apache2
 
-deploy_message "Setting up for MySql Install"
+console_message "Setting up for MySql Install"
 echo mysql-server mysql-server/root_password password password | debconf-set-selections
 echo mysql-server mysql-server/root_password_again password password | debconf-set-selections
-deploy_message "Installing MySQL"
+console_message "Installing MySQL"
 apt-get -q -y install mysql-server mysql-client
 
 fi
 
-deploy_message "Installing Tidy"
+console_message "Installing Tidy"
 apt-get -q -y install tidy
 
 #--- Start Build Process ---#
@@ -105,10 +106,10 @@ tidy *.htm* > /dev/null 2>&1
 TIDYSTATUS=$?
 if [ $TIDYSTATUS -eq 2 ] ; then
 	echo tidy: errors found in html files
-	console_error "Errors found in HTML files, exiting."
+	console_error "Errors found in HTML files, exiting"
 	exit 1;
 elif [ $TIDYSTATUS -eq 1 ] ; then
-	console_message "The HTML files generated warnings, ignoring."
+	console_warning "The HTML files generated warnings, ignoring"
 fi
 cd ../..
 mkdir -p apache/cgi-bin
@@ -116,6 +117,21 @@ mkdir -p apache/www
 cp webpackage/html/* apache/www/
 cp webpackage/cgi/* apache/cgi-bin
 cp webpackage/templates/* apache/cgi-bin
+tar -zcvf ../webpackage_preTest.tgz apache
+
+# back up to sandbox level
+cd ..
+ERRORCHECK=0
+
+#--- Start Test Process ---#
+
+console_message "Testing application"
+
+mv webpackage_preTest.tgz test
+cd test
+tar -zxvf webpackage_preTest.tgz
+cd apache/cgi-bin
+testCgiScript
 tar -zcvf ../webpackage_preDeploy.tgz apache
 
 # back up to sandbox level

@@ -30,7 +30,6 @@ function compareChecksumFiles {
 	fi
 }
 
-function buildApp {
-	top_dir=$1
-	files=$(find $top_dir -type f)
+function testCgiForm {
+	
 }
