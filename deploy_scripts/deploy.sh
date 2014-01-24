@@ -35,60 +35,21 @@ rm -rf webpackage
 
 #--- Clean Build/Test Server ---#
 
-# TODO: remove this
-DOCLEAN=1
-
-if [ $DOCLEAN -eq 0 ] ; then
-
-console_message 'Cleaning System Environment'
-
-# TODO: message relating to service
-# Stop Apache & MySQL services
-/etc/init.d/apache2 stop
-/etc/init.d/mysql stop
-
-console_message 'Updating pacakge repositories'
-apt-get -qq update
-
-console_message "Removing Apache"
-apt-get -q -y purge apache2
-console_message "Removing MySQL"
-apt-get -q -y purge mysql-server mysql-client
-console_message "Removing Tidy"
-apt-get -q -y purge tidy
-
-console_message "Tidying Up Packages"
-apt-get -q -y autoremove
-apt-get -q -y autoclean
-
-console_message "Installing Apache"
-apt-get -q -y install apache2
-
-console_message "Setting up for MySql Install"
-echo mysql-server mysql-server/root_password password password | debconf-set-selections
-echo mysql-server mysql-server/root_password_again password password | debconf-set-selections
-console_message "Installing MySQL"
-apt-get -q -y install mysql-server mysql-client
-console_message "Installing Tidy"
-apt-get -q -y install tidy
-
-fi
+clean_install
 
 #--- Start Build Process ---#
 
 console_message "Building application"
 
 # move preBuild archive to build folder
-mv webpackage_preBuild.tgz build
-cd build
-# extract preBuild
-tar -zxvf webpackage_preBuild.tgz
+extract_package "webpackage_preBuild.tgz" "build"
+
 # run build perl script
 perl $SANDBOX_DIR/buildapp.pl webpackage
+
 # create preIntegrate archive
-tar -zcvf ../webpackage_preIntegrate.tgz webpackage
-# back up to sandbox level
-cd ..
+create_package "../webpackage_preIntegrate.tgz" "webpackage"
+
 # TODO: sort out this ERRORCHECK
 ERRORCHECK=0
 
@@ -96,9 +57,8 @@ ERRORCHECK=0
 
 console_message "Integrating application"
 
-mv webpackage_preIntegrate.tgz integrate
-cd integrate
-tar -zxvf webpackage_preIntegrate.tgz
+extract_package "webpackage_preIntegrate.tgz" "integrate"
+
 cd webpackage/html
 # use tidy utility to check html
 tidy *.htm* > /dev/null 2>&1
@@ -116,19 +76,16 @@ mkdir -p apache/www
 cp webpackage/html/* apache/www/
 cp webpackage/cgi/* apache/cgi-bin
 cp webpackage/templates/* apache/cgi-bin
-tar -zcvf ../webpackage_preTest.tgz apache
 
-# back up to sandbox level
-cd ..
+create_package "../webpackage_preTest.tgz" "apache"
+
 ERRORCHECK=0
 
 #--- Start Test Process ---#
 
 console_message "Testing application"
 
-mv webpackage_preTest.tgz test
-cd test
-tar -zxvf webpackage_preTest.tgz
+extract_package "webpackage_preTest.tgz" "test"
 
 # Start services
 /etc/init.d/apache2 start
