@@ -7,7 +7,7 @@ source deploy_lib_helper.sh
 function isRunning {
 	PROCESS_NUM=$(ps -ef | grep "$1" | grep -v "grep" | wc -l)
 	if [ $PROCESS_NUM -gt 0 ] ; then
-		echo $PROCESS_NUM
+		#echo $PROCESS_NUM
 		return 1
 	else
 		return 0
@@ -39,7 +39,7 @@ function isTCPremoteOpen {
 }
 
 
-function isIPalive {
+function isIPAlive {
 	PINGCOUNT=$(ping -c 1 "$1" | grep "1 received" | wc -l)
 	if [ $PINGCOUNT -gt 0 ] ; then
 		return 1
@@ -92,14 +92,14 @@ function isMysqlRemoteUp {
 	return $?
 }
 
-# ----
+# ---- Main functions
 
 function test_infrastructure {
 	local ERRORCOUNT=0
 
 	isApacheRunning
 	if [ "$?" -eq 1 ]; then
-		console_message "Apache process is Running"
+		echo "Apache process is Running"
 	else
 		console_error "Apache process is not Running"
 		ERRORCOUNT=$((ERRORCOUNT+1))
@@ -107,7 +107,7 @@ function test_infrastructure {
 
 	isApacheListening
 	if [ "$?" -eq 1 ]; then
-		console_message "Apache is Listening"
+		echo "Apache is Listening"
 	else
 		console_error "Apache is not Listening"
 		ERRORCOUNT=$((ERRORCOUNT+1))
@@ -115,7 +115,7 @@ function test_infrastructure {
 
 	isApacheRemoteUp
 	if [ "$?" -eq 1 ]; then
-		console_message "Remote Apache TCP port is up"
+		echo "Remote Apache TCP port is up"
 	else
 		console_error "Remote Apache TCP port is down"
 		ERRORCOUNT=$((ERRORCOUNT+1))
@@ -123,7 +123,7 @@ function test_infrastructure {
 
 	isMysqlRunning
 	if [ "$?" -eq 1 ]; then
-		console_message "Mysql process is Running"
+		echo "Mysql process is Running"
 	else
 		console_error "Mysql process is not Running"
 		ERRORCOUNT=$((ERRORCOUNT+1))
@@ -131,7 +131,7 @@ function test_infrastructure {
 
 	isMysqlListening
 	if [ "$?" -eq 1 ]; then
-		console_message "Mysql is Listening"
+		echo "Mysql is Listening"
 	else
 		console_error "Mysql is not Listening"
 		ERRORCOUNT=$((ERRORCOUNT+1))
@@ -139,7 +139,7 @@ function test_infrastructure {
 
 	isMysqlRemoteUp
 	if [ "$?" -eq 1 ]; then
-		console_message "Remote Mysql TCP port is up"
+		echo "Remote Mysql TCP port is up"
 	else
 		console_error "Remote Mysql TCP port is down"
 		ERRORCOUNT=$((ERRORCOUNT+1))

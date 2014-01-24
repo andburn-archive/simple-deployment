@@ -129,6 +129,13 @@ create_package "../webpackage_preDeploy.tgz" "apache"
 
 console_message "Deploy to live AWS Server"
 
+# check server is up
+isIPAlive $AWS_IP
+if [ $? -eq 0 ] ; then
+	console_error "AWS machine ($AWS_IP) is not responding."
+	exit 1
+fi
+
 scp -i $AWS_PEM webpackage_preDeploy.tgz ubuntu@$AWS_URL:~
 ssh -i $AWS_PEM ubuntu@$AWS_URL "sudo bash -s" < deploy_aws.sh
 
