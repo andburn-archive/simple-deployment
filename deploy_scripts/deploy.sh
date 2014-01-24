@@ -7,6 +7,8 @@ source deploy_lib_helper.sh
 source deploy_lib_build.sh
 source deploy_lib_monitor.sh
 
+SANDBOX_DIR=$(pwd)
+
 console_message "Checking Source Package"
 # create a checksum of all files in webpackage
 createChecksumFile webpackage webpackage.md5
@@ -40,7 +42,7 @@ cd build
 # extract preBuild
 tar -zxvf webpackage_preBuild.tgz
 # run build perl script
-perl buildapp.pl webpackage
+perl $SANDBOX_DIR/buildapp.pl webpackage
 # create preIntegrate archive
 tar -zcvf ../webpackage_preIntegrate.tgz webpackage
 # back up to sandbox level
