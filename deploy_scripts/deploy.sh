@@ -32,6 +32,48 @@ fi
 # delete webpackage dir
 rm -rf webpackage
 
+#--- Clean Build/Test Server ---#
+
+# TODO: remove this
+DOCLEAN=1
+
+if [ $DOCLEAN -eq 0 ] ; then
+
+console_message 'Cleaning System Environment'
+
+# TODO: message relating to service
+# Stop Apache & MySQL services
+/etc/init.d/apache2 stop
+/etc/init.d/mysql stop
+
+console_message 'Updating pacakge repositories'
+apt-get -qq update
+
+deploy_message "Removing Apache"
+apt-get -q -y purge apache2
+deploy_message "Removing MySQL"
+apt-get -q -y purge mysql-server mysql-client
+deploy_message "Removing Tidy"
+apt-get -q -y purge tidy
+
+deploy_message "Tidying Up Packages"
+apt-get -q -y autoremove
+apt-get -q -y autoclean
+
+deploy_message "Installing Apache"
+apt-get -q -y install apache2
+
+deploy_message "Setting up for MySql Install"
+echo mysql-server mysql-server/root_password password password | debconf-set-selections
+echo mysql-server mysql-server/root_password_again password password | debconf-set-selections
+deploy_message "Installing MySQL"
+apt-get -q -y install mysql-server mysql-client
+
+fi
+
+deploy_message "Installing Tidy"
+apt-get -q -y install tidy
+
 #--- Start Build Process ---#
 
 console_message "Building application"
@@ -45,6 +87,37 @@ tar -zxvf webpackage_preBuild.tgz
 perl $SANDBOX_DIR/buildapp.pl webpackage
 # create preIntegrate archive
 tar -zcvf ../webpackage_preIntegrate.tgz webpackage
+# back up to sandbox level
+cd ..
+# TODO: sort out this ERRORCHECK
+ERRORCHECK=0
+
+#--- Start Integration Process ---#
+
+console_message "Integrating application"
+
+mv webpackage_preIntegrate.tgz integrate
+cd integrate
+tar -zxvf webpackage_preIntegrate.tgz
+cd webpackage/html
+# use tidy utility to check html
+tidy *.htm* > /dev/null 2>&1
+TIDYSTATUS=$?
+if [ $TIDYSTATUS -eq 2 ] ; then
+	echo tidy: errors found in html files
+	console_error "Errors found in HTML files, exiting."
+	exit 1;
+elif [ $TIDYSTATUS -eq 1 ] ; then
+	console_message "The HTML files generated warnings, ignoring."
+fi
+cd ../..
+mkdir -p apache/cgi-bin
+mkdir -p apache/www
+cp webpackage/html/* apache/www/
+cp webpackage/cgi/* apache/cgi-bin
+cp webpackage/templates/* apache/cgi-bin
+tar -zcvf ../webpackage_preDeploy.tgz apache
+
 # back up to sandbox level
 cd ..
 ERRORCHECK=0

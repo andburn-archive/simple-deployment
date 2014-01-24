@@ -7,7 +7,7 @@ my $structre_count = -1;
 
 foreach my $d (@structure) {
 	if (-e "$dir/$d") {
-		print "$d exists\n";
+		#print "$d exists\n";
 		$structre_count++;
 	}
 }
