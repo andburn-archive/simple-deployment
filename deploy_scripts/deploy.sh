@@ -172,6 +172,9 @@ chmod a+x /usr/lib/cgi-bin/*.pl
 console_message "Testing on test server"
 console_warning "Check manually on 127.0.0.1:8080"
 
+test_application_running
+echo $?
+
 # back up to sandbox level
 cd ..
 ERRORCHECK=0
