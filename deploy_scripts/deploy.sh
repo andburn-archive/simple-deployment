@@ -36,7 +36,7 @@ rm -rf webpackage
 #--- Clean Build/Test Server ---#
 
 # TODO: remove this
-DOCLEAN=1
+DOCLEAN=0
 
 if [ $DOCLEAN -eq 0 ] ; then
 

@@ -1,7 +1,5 @@
 function testCgiScript {
 	# start mysql
-	# TODO: remove
-	apt-get install mysql-server mysql-client
 	/etc/init.d/mysql start
 
 	# create database
