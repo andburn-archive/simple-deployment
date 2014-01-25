@@ -21,13 +21,13 @@ function isAppRunning {
 }
 
 # check remote apache process
-ssh -i $AWS_PEM vagrant@$AWS_IP "sudo bash -c $ps_apache"
+ssh -i $AWS_PEM ubuntu@$AWS_IP "sudo bash -c $ps_apache"
 if [ "$?" -ne 0 ]; then
 	monitor_log "AWS Apache is down."
 fi
 
 # check remote mysql process
-ssh -i $AWS_PEM vagrant@$AWS_IP "sudo bash -c $ps_mysql"
+ssh -i $AWS_PEM ubuntu@$AWS_IP "sudo bash -c $ps_mysql"
 if [ "$?" -ne 0 ]; then
 	monitor_log "AWS Mysql is down."
 fi
