@@ -62,7 +62,7 @@ mkdir -p $MONITOR_DIR
 rm -rf $MONITOR_DIR/*
 cp $REPO_NAME/deploy_scripts/{cron_job.sh,deploy_lib_monitor.sh,deploy_lib_helper.sh} $MONITOR_DIR/
 chmod a+x $MONITOR_DIR/cron_job.sh
-echo "*/2 * * * * /dep_monitor/cron_job.sh" | sudo crontab -
+echo "* * * * * /dep_monitor/cron_job.sh" | sudo crontab -
 
 # delete repo directory
 rm -rf $REPO_NAME

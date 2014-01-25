@@ -4,6 +4,10 @@ source deploy_lib_monitor.sh
 
 MONITOR_LOG="/dep_monitor/monitor.log"
 AWS_IP="54.194.174.13"
+AWS_PEM="/home/vagrant/.ssh/aws.pem"
+
+ps_apache="ps -ef | grep apache | grep -v grep"
+ps_mysql="ps -ef | grep mysql | grep -v grep"
 
 function monitor_log {
 	# TODO: format tstamp
@@ -11,27 +15,19 @@ function monitor_log {
 	echo "[$tstamp] $1" >> $MONITOR_LOG
 }
 
-function isAWSApacheUp {
-	nc -z -w 3 $AWS_IP 80
-	return $?
-}
-
-function isAWSMySqlUp {
-	nc -z -w 3 $AWS_IP 3306
-	return $?
-}
-
 function isAppRunning {
-	curl "http://$AWS_IP:80" | grep "<title>Sample App</title>"
+	curl "http://$AWS_IP" | grep "<title>Sample App</title>"
 	return $?
 }
 
-isAWSApacheUp
+# check remote apache process
+ssh -i $AWS_PEM vagrant@$AWS_IP "sudo bash -c $ps_apache"
 if [ "$?" -ne 0 ]; then
 	monitor_log "AWS Apache is down."
 fi
 
-isAWSMySqlUp
+# check remote mysql process
+ssh -i $AWS_PEM vagrant@$AWS_IP "sudo bash -c $ps_mysql"
 if [ "$?" -ne 0 ]; then
 	monitor_log "AWS Mysql is down."
 fi
