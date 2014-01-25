@@ -6,11 +6,12 @@ source deploy_lib_build.sh
 source deploy_lib_monitor.sh
 source deploy_lib_test.sh
 
+BUILD_USER="vagrant"
 # AWS instance data
 AWS_IP="54.194.174.13"
 AWS_URL="ec2-54-194-174-13.eu-west-1.compute.amazonaws.com"
 # script needs pem file on VBox machine at:
-AWS_PEM="/home/testuser/.ssh/aws.pem"
+AWS_PEM="/home/$BUILD_USER/.ssh/aws.pem"
 
 # keep track of root build dir
 SANDBOX_DIR=$(pwd)

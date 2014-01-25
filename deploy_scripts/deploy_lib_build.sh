@@ -19,7 +19,9 @@ function clean_install {
 	apt-get -q -y purge mysql-server mysql-client
 	console_message "Removing Tidy"
 	apt-get -q -y purge tidy
-
+	console_message "Removing Curl"
+	apt-get -q -y purge curl
+	
 	console_message "Tidying Up Packages"
 	apt-get -q -y autoremove
 	apt-get -q -y autoclean
@@ -35,6 +37,9 @@ function clean_install {
 	
 	console_message "Installing Tidy"
 	apt-get -q -y install tidy
+	
+	console_message "Installing Curl"
+	apt-get -q -y install curl
 }
 
 # application integration

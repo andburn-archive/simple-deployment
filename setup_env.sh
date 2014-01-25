@@ -37,7 +37,7 @@ apt-get -qq update
 git --version >/dev/null
 if [ $? -ne 0 ] ; then
 	echo "----- Installing git"
-	apt-get install git
+	apt-get -q -y install git
 fi
 
 # clone github repo
