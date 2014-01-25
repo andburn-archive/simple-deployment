@@ -6,6 +6,14 @@ source deploy_lib_build.sh
 source deploy_lib_monitor.sh
 source deploy_lib_test.sh
 
+CLEAN_INSTALL=1
+if [ -n "$1" ] ; then
+	# not doing any checks here
+	# assuming its going to be 
+	# either 0 or 1
+	CLEAN_INSTALL=$1
+fi
+
 BUILD_USER="vagrant"
 # AWS instance data
 AWS_IP="54.194.174.13"
@@ -41,7 +49,9 @@ rm -rf webpackage
 
 #--- Clean Build/Test Server ---#
 
-clean_install
+if [ $CLEAN_INSTALL ] ; then
+	clean_install
+fi
 
 #--- Start Build Process ---#
 
@@ -116,6 +126,7 @@ console_message "Testing on test server"
 console_warning "Check manually on 127.0.0.1:8080"
 
 test_application_running
+
 if [ $? -ne 0 ] ; then
 	console_error "Server test failed, aborting"
 	exit 1

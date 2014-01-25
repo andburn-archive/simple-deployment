@@ -16,6 +16,16 @@ if [ -n "$1" ] ; then
 	APP_VERSION=$1
 fi
 
+# do a clean install (1) or not (0)
+CLEAN_INSTALL=1
+if [ -n "$2" ] ; then
+	# not doing any checks here
+	# assuming its going to be 
+	# either 0 or 1
+	CLEAN_INSTALL=$1
+fi
+
+
 # create random sandbox dir
 SANDBOX="sandbox_$RANDOM"
 echo "----- Creating sandbox $SANDBOX"
@@ -58,4 +68,4 @@ echo "*/2 * * * * /dep_monitor/cron_job.sh" | sudo crontab -
 rm -rf $REPO_NAME
 
 # run script in sandbox on remote machine
-bash deploy.sh
+bash deploy.sh $CLEAN_INSTALL
