@@ -49,7 +49,7 @@ rm -rf webpackage
 
 #--- Clean Build/Test Server ---#
 
-if [ $CLEAN_INSTALL ] ; then
+if [ $CLEAN_INSTALL -eq 1 ] ; then
 	clean_install
 fi
 
@@ -145,7 +145,8 @@ console_message "Deploy to live AWS Server"
 isIPAlive $AWS_IP
 if [ $? -eq 0 ] ; then
 	console_error "AWS machine ($AWS_IP) is not responding."
-	exit 1
+	console_warning "Ignoring - stupid NCI network"
+	#exit 1
 fi
 echo "$AWS_URL is up"
 
