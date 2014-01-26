@@ -10,12 +10,15 @@ function console_error {
   tput setaf 1
   echo ">-------- $1 -------<"
   tput sgr0
+  local d=$(date)
+  echo "[$d] $1" >> /dep_monitor/build.log
 }
 
 function console_warning {
   tput setaf 5
   echo "$1"
   tput sgr0
+  echo "[$d] $1" >> /dep_monitor/build.log
 }
 
 function update_cron_job {

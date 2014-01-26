@@ -33,11 +33,9 @@ function isUDPlisten {
 	fi
 }
 
-
 function isTCPremoteOpen {
 	timeout 1 bash -c "echo >/dev/tcp/$1/$2" && return 1 ||  return 0
 }
-
 
 function isIPAlive {
 	PINGCOUNT=$(ping -c 1 "$1" | grep "1 received" | wc -l)
@@ -145,11 +143,8 @@ function test_infrastructure {
 		ERRORCOUNT=$((ERRORCOUNT+1))
 	fi
 
-
 	if  [ $ERRORCOUNT -gt 0 ]
 	then
-		console_error "There is a problem with Apache or Mysql"
-		#| perl sendmail.pl $ADMINISTRATOR $MAILSERVER
+		console_error "There is a problem with Apache or Mysql" | perl sendmail.pl $ADMINISTRATOR $MAILSERVER
 	fi
-
 }
