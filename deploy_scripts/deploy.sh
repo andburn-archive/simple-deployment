@@ -49,9 +49,7 @@ rm -rf webpackage
 
 #--- Clean Build/Test Server ---#
 
-if [ $CLEAN_INSTALL -eq 1 ] ; then
-	clean_install
-fi
+clean_install
 
 #--- Start Build Process ---#
 
@@ -145,13 +143,12 @@ console_message "Deploy to live AWS Server"
 isIPAlive $AWS_IP
 if [ $? -eq 0 ] ; then
 	console_error "AWS machine ($AWS_IP) is not responding."
-	console_warning "Ignoring - stupid NCI network"
-	#exit 1
+	exit 1
 fi
 echo "$AWS_URL is up"
 
 console_message "Transferring package and setting up"
 
-scp -i $AWS_PEM webpackage_preDeploy.tgz ubuntu@$AWS_URL:~
-ssh -i $AWS_PEM ubuntu@$AWS_URL "sudo bash -s" < deploy_aws.sh
+scp -i $AWS_PEM webpackage_preDeploy.tgz deploy_aws.sh deploy_lib_helper.sh deploy_lib_monitor.sh deploy_lib_test.sh ubuntu@$AWS_URL:~
+ssh -i $AWS_PEM ubuntu@$AWS_URL "sudo bash deploy_aws.sh $CLEAN_INSTALL"
 
