@@ -4,7 +4,7 @@ source deploy_lib_monitor.sh
 
 MONITOR_LOG="/dep_monitor/monitor.log"
 AWS_IP="54.194.174.13"
-AWS_PEM="/home/vagrant/.ssh/aws.pem"
+AWS_PEM="/home/testuser/.ssh/aws.pem"
 ADMINISTRATOR="admin@example.com"
 MAILSERVER="smtp.yourisp.com"
 
