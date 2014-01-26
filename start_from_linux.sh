@@ -1,4 +1,4 @@
-BUILD_USER="vagrant"
+BUILD_USER="testuser"
 APP_VERSION=1
 if [ -n "$1" ] ; then
 	APP_VERSION=$1

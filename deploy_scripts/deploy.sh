@@ -14,7 +14,7 @@ if [ -n "$1" ] ; then
 	CLEAN_INSTALL=$1
 fi
 
-BUILD_USER="vagrant"
+BUILD_USER="testuser"
 # AWS instance data
 AWS_IP="54.194.174.13"
 AWS_URL="ec2-54-194-174-13.eu-west-1.compute.amazonaws.com"

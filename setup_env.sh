@@ -7,7 +7,7 @@ REPO_URL="https://github.com/andburn/$REPO_NAME.git"
 # monitor script location
 MONITOR_DIR="/dep_monitor"
 
-# the version of the app to build
+# the version of the app to build (for demo purposes)
 APP_VERSION=1
 if [ -n "$1" ] ; then
 	# not doing any checks here
@@ -62,7 +62,7 @@ mkdir -p $MONITOR_DIR
 rm -rf $MONITOR_DIR/*
 cp $REPO_NAME/deploy_scripts/{cron_job.sh,deploy_lib_monitor.sh,deploy_lib_helper.sh} $MONITOR_DIR/
 chmod a+x $MONITOR_DIR/cron_job.sh
-echo "* * * * * /dep_monitor/cron_job.sh" | sudo crontab -
+echo "*/2 * * * * /dep_monitor/cron_job.sh" | sudo crontab -
 
 # delete repo directory
 rm -rf $REPO_NAME
